@@ -6,38 +6,33 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 )
 
 var (
 	filePath string
 )
 
+const filecsv = ""
+
 func init() {
-	flag.StringVar(&filePath, "filepath", "", "Path of csv")
+	flag.StringVar(&filePath, "filepath", "./urls.csv", "Path of csv")
 }
 
 func main() {
 	urls := readCSV(filePath)
-	for _, url := range urls {
-		// get parsedURL value
-		newurl := ParseCleanURL(url)
-		//send url to neo4j client
-		driver := bolt.NewDriver()
-		conn, err := driver.OpenNeo("bolt://username:password@localhost:7687")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer conn.Close()
+	var urlArray []string
+	for _, val := range urls {
+		newURL := ParseCleanURL(val)
+		urlArray = append(urlArray, newURL)
 	}
+	writeCSV(urlArray)
 }
 
 func readCSV(filePath string) []string {
 	file, err := os.Open(filePath)
 	defer file.Close()
 	if err != nil {
-		log.Fatalf("Unable to open file, %vs", err)
+		log.Fatalf("Unable to open file, %v", err)
 	}
 	urls, err := csv.NewReader(file).ReadAll()
 	if err != nil {
@@ -45,9 +40,26 @@ func readCSV(filePath string) []string {
 	}
 	var urlArry []string
 	for _, url := range urls {
-		urlArry = append(urlArry, url[0])
+		for _, val := range url {
+			urlArry = append(urlArry, val)
+		}
 	}
 	return urlArry
+}
+func writeCSV(cleanURLS []string) {
+	file, err := os.Create("./urlsclean.csv")
+	if err != nil {
+		log.Fatalf("Cannot create file", err)
+		defer file.Close()
+	}
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	err = writer.Write(cleanURLS)
+	if err != nil {
+		log.Fatalf("Cannot write to file", err)
+	}
+
 }
 
 //parseCleanURL does xyz
@@ -55,5 +67,3 @@ func ParseCleanURL(url string) string {
 	url = strings.Replace(url, "//", "/", -1)
 	return strings.Replace(url, "/", "~", -1)
 }
-
-//http~time~.com~/search/~q=python+programming
