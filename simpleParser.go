@@ -14,7 +14,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&filePath, "filepath", "./urls.csv", "Path of csv")
+	flag.StringVar(&filePath, "filepath", "", "Path of csv")
+	flag.Parse()
 }
 func main() {
 	urls := readFile(filePath)
