@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -15,15 +17,30 @@ var (
 func init() {
 	flag.StringVar(&filePath, "filepath", "./urls.csv", "Path of csv")
 }
-
 func main() {
-	urls := readCSV(filePath)
+	urls := readFile(filePath)
 	var urlArray []string
 	for _, val := range urls {
 		newURL := ParseCleanURL(val)
 		urlArray = append(urlArray, newURL)
 	}
 	writeCSV(urlArray)
+}
+
+func readFile(filePath string) []string {
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	var urlArry []string
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+		urlArry = append(urlArry, scanner.Text())
+	}
+	return urlArry
+
 }
 
 func readCSV(filePath string) []string {
