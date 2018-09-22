@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
 )
 
 var (
@@ -20,8 +22,14 @@ func main() {
 	urls := readCSV(filePath)
 	for _, url := range urls {
 		// get parsedURL value
-		ParseCleanURL(url)
+		newurl := ParseCleanURL(url)
 		//send url to neo4j client
+		driver := bolt.NewDriver()
+		conn, err := driver.OpenNeo("bolt://username:password@localhost:7687")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer conn.Close()
 	}
 }
 
