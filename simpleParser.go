@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/csv"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -36,8 +35,10 @@ func readFile(filePath string) []string {
 	scanner := bufio.NewScanner(file)
 	var urlArry []string
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
 		urlArry = append(urlArry, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		log.Print(err)
 	}
 	return urlArry
 
