@@ -12,8 +12,6 @@ var (
 	filePath string
 )
 
-const filecsv = ""
-
 func init() {
 	flag.StringVar(&filePath, "filepath", "./urls.csv", "Path of csv")
 }
