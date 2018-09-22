@@ -10,11 +10,12 @@ import (
 )
 
 var (
-	filePath string
+	filePath, OutputPath string
 )
 
 func init() {
 	flag.StringVar(&filePath, "filepath", "", "Path of csv")
+	flag.StringVar(&OutputPath, "outpath", "./cleanurls.csv", "Output path for the csv")
 	flag.Parse()
 }
 func main() {
@@ -24,7 +25,7 @@ func main() {
 		newURL := ParseCleanURL(val)
 		urlArray = append(urlArray, newURL)
 	}
-	writeline(urlArray)
+	writeline(urlArray, OutputPath)
 }
 
 func readFile(filePath string) []string {
@@ -44,8 +45,8 @@ func readFile(filePath string) []string {
 	return urlArry
 
 }
-func writeline(data []string) {
-	file, err := os.Create("./urlsclean.csv")
+func writeline(data []string, outputpath string) {
+	file, err := os.Create(outputpath)
 	if err != nil {
 		log.Fatalf("Cannot create file %v", err)
 		defer file.Close()
