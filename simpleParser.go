@@ -24,7 +24,7 @@ func main() {
 		newURL := ParseCleanURL(val)
 		urlArray = append(urlArray, newURL)
 	}
-	writeCSV(urlArray)
+	writeline(urlArray)
 }
 
 func readFile(filePath string) []string {
@@ -41,6 +41,21 @@ func readFile(filePath string) []string {
 	}
 	return urlArry
 
+}
+func writeline(data []string) {
+	file, err := os.Create("./urlsclean.csv")
+	if err != nil {
+		log.Fatalf("Cannot create file %v", err)
+		defer file.Close()
+	}
+	var line string
+	for _, val := range data {
+		line += val + "\n"
+	}
+	_, err = file.WriteString(line)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func readCSV(filePath string) []string {
