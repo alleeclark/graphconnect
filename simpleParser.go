@@ -49,7 +49,7 @@ func readCSV(filePath string) []string {
 func writeCSV(cleanURLS []string) {
 	file, err := os.Create("./urlsclean.csv")
 	if err != nil {
-		log.Fatalf("Cannot create file", err)
+		log.Fatalf("Cannot create file %v", err)
 		defer file.Close()
 	}
 	writer := csv.NewWriter(file)
@@ -57,7 +57,7 @@ func writeCSV(cleanURLS []string) {
 
 	err = writer.Write(cleanURLS)
 	if err != nil {
-		log.Fatalf("Cannot write to file", err)
+		log.Fatalf("Cannot write to file %v", err)
 	}
 
 }
